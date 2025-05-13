@@ -90,7 +90,7 @@ function initializePlaycademyInternal() {
 
             const mockContext = {
                 baseUrl: '/api',
-                gameToken: 'mock-game-token-for-local-dev',
+                token: 'mock-game-token-for-local-dev',
                 gameId: 'mock-game-id-from-template',
             }
 
