@@ -1,50 +1,73 @@
-# Playcademy Vite JS Template
+# Vite + JavaScript + Playcademy Template
 
-This template provides a starting point for integrating a web-native game built with Vite (JavaScript) with the Playcademy platform.
+This template provides a starting point for building web-native games for the Playcademy platform using Vite and JavaScript.
 
 ## Features
 
-- **Playcademy SDK Integration**: Includes basic setup for the `@playcademy/sdk`.
-- **Manifest Plugin**: Pre-configured with `@playcademy/vite-plugin` to generate `cademy.manifest.json`.
-- **Initialization Logic**: Handles SDK initialization for both iframe (Playcademy platform) and standalone (local development) modes.
-- **Mock Context**: Provides a mock `window.CADEMY` context for easier local development and testing.
-- **Example UI**: Basic UI elements to show initialization status and an exit button.
+- A standard Vite JavaScript setup.
+- Pre-configured `@playcademy/sdk` integration.
+- Automatic `cademy.manifest.json` generation using `@playcademy/vite-plugin-cademy-manifest`.
+- Initialization logic to handle both running within the Playcademy platform (iframe) and local standalone development.
+- Example UI elements showing initialization status and an exit button.
 
-## Setup
+## Getting Started
 
-1.  **Install Dependencies**:
+### Using `degit` (Recommended)
 
-    ```bash
-    bun install
-    # or npm install / yarn install
-    ```
+```bash
+# Replace my-cademy-game with your desired project name
+bunx degit superbuilders/playcademy-vite-template-js my-cademy-game
+cd my-cademy-game
+bun install # or npm install / yarn install
+```
 
-2.  **Configure `vite.config.js`**:
-    Open `vite.config.js` and update the `gameId` and `gameName` in the `cademyManifestPlugin` configuration to match your game's details on the Playcademy platform.
+## Development
 
-3.  **Develop Your Game**:
-    Build your game logic primarily in the `src` directory. `main.js` is the main entry point.
-    The Playcademy client instance is available after the `initializeCademy()` promise resolves in `main.js`.
+Run the development server:
 
-## Local Development
+```bash
+bun dev
+# or
+npm run dev
+# or
+yarn dev
+```
 
-When running the game locally (e.g., using `bun run dev`), `src/playcademy-init.js` sets up a mock context on `window.CADEMY`. This allows you to test core game logic that might interact with the SDK without needing to run it inside the full Playcademy platform.
+- **Standalone Mode:** When you run the dev server and open the localhost URL directly in your browser, the template uses a **mock `window.CADEMY` context** defined in `src/playcademy-init.js`. This allows the game to load and basic UI to function, but SDK calls will _not_ interact with a real backend.
 
-- The `baseUrl` in the mock context is set to `/api`. If your local development server for the API (if any) runs on a different port, you might need to configure the proxy in `vite.config.js` (see comments in the file).
-- The `client.runtime.exit()` function will only log a warning in standalone mode as there is no platform to exit to.
+    - The `baseUrl` in the mock context is set to `/api`. If you are running a local development server for the Playcademy API and it's _not_ proxied to `/api` by Vite, you may need to adjust the `baseUrl` in the mock context or configure Vite's proxy settings in `vite.config.js`. See the Vite documentation for proxy configuration.
+    - The `client.runtime.exit()` function will only log a warning in standalone mode, as there is no platform environment to exit.
+
+- **Iframe Mode (Simulated):** To simulate running inside the Playcademy platform, you would typically load this development URL within an iframe in a separate local HTML file or test harness. This harness would need to use `postMessage` to send a valid `CADEMY_CONTEXT` object (containing a real `baseUrl` and potentially `sessionToken`/`gameToken`) to the game iframe before `initializeCademy` is called in `src/main.js`.
+
+## SDK Access
+
+The initialized `CademyClient` instance is available via the `cademyClient` variable exported from `src/playcademy-init.js` after the `initializeCademy()` promise resolves. You can import and use this client instance in other modules as needed to interact with Playcademy APIs (e.g., `cademyClient.progress.update(...)`).
+
+See the example `exitButton` implementation in `src/main.js`.
 
 ## Building for Playcademy
 
-Run the build command:
+Build the production-ready assets:
 
 ```bash
 bun run build
+# or npm run build / yarn build
 ```
 
-This will generate the production build in the `dist` folder, including the `cademy.manifest.json` required by the Playcademy platform.
+This command will:
+
+1.  Run Vite's build process, outputting optimized files to the `dist/` directory.
+2.  Trigger the `@playcademy/vite-plugin-cademy-manifest`, which will generate the `cademy.manifest.json` file inside `dist/`. Ensure you have updated the placeholder `gameId` and `gameName` in `vite.config.js` to match your game's details on the Playcademy platform.
+
+The `dist/` directory will contain all the necessary files for your game. **You must create a zip file from the contents of this `dist/` directory** and upload that zip file to the Playcademy platform when creating or updating your game.
+
+For more details on the build and upload process, please refer to the [Playcademy Documentation](https://docs.playcademy.net).
 
 ## Customization
 
-- **Styling**: Modify `style.css` and `src/rainbow-status.css` for UI styling.
-- **HTML**: The main HTML structure is in `index.html`, with dynamic content largely injected by `main.js`.
-- **SDK Usage**: Expand upon the example SDK usage in `main.js` to integrate features like user data, game state saving/loading, inventory, etc.
+- **Game Logic**: Implement your core game logic within the `src` directory. `src/main.js` is the main entry point.
+- **Initialization**: Modify SDK initialization behavior or the mock context in `src/playcademy-init.js`.
+- **Styling**: Adjust UI styles in `style.css` and `src/rainbow-status.css`.
+- **HTML Structure**: The base HTML is in `index.html`. Dynamic content is injected by `src/main.js`.
+- **Vite Configuration**: Add plugins or adjust build settings in `vite.config.js`.
