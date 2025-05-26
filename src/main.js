@@ -3,7 +3,7 @@ import './rainbow-status.css'
 import viteLogo from '/vite.svg'
 import javascriptLogo from '/javascript.svg'
 
-import { setupPlaycademy } from './playcademy'
+import { PlaycademyClient } from '@playcademy/sdk'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -34,7 +34,7 @@ const exitButtonElement = document.querySelector('#exitButton')
 
     try {
         // Step 1: Initialize the SDK
-        client = await setupPlaycademy()
+        client = await PlaycademyClient.init()
         // Step 2: Update template UI based on success
         updateUIToSuccess(client, statusTextElement, exitButtonElement)
     } catch (error) {
@@ -71,8 +71,8 @@ const exitButtonElement = document.querySelector('#exitButton')
 function updateUIToSuccess(client, statusEl, buttonEl) {
     console.log('[Main] Playcademy SDK Initialized:', client)
     if (statusEl) {
-        const isDevelopment = window.self === window.top
-        statusEl.textContent = `Playcademy SDK Initialized!${isDevelopment ? ' [Development Mode]' : ''}`
+        const isStandalone = window.self === window.top
+        statusEl.textContent = `Playcademy SDK Initialized!${isStandalone ? ' [Standalone Mode]' : ''}`
     }
     if (buttonEl) {
         buttonEl.disabled = false
@@ -91,7 +91,7 @@ function updateUIToSuccess(client, statusEl, buttonEl) {
                     '[Main] Exit Game clicked in Standalone Mode. No actual exit occurs.',
                 )
                 if (statusEl) {
-                    statusEl.textContent = 'Exited [Development Mode]'
+                    statusEl.textContent = 'Exited [Standalone Mode]'
                     statusEl.classList.add('exited')
                 }
                 if (newButtonEl) {
