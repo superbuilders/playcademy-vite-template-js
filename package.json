@@ -1,11 +1,11 @@
 {
   "name": "@playcademy/vite-template-js",
+  "version": "0.8.0",
   "private": true,
-  "version": "0.7.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
     "preview": "vite preview"
   },
   "dependencies": {

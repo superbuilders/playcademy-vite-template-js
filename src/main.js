@@ -1,9 +1,10 @@
 import './style.css'
 import './rainbow-status.css'
-import viteLogo from '/vite.svg'
-import javascriptLogo from '/javascript.svg'
 
 import { PlaycademyClient } from '@playcademy/sdk'
+
+import javascriptLogo from '/javascript.svg'
+import viteLogo from '/vite.svg'
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -82,14 +83,10 @@ function updateUIToSuccess(client, statusEl, buttonEl) {
 
         newButtonEl.addEventListener('click', () => {
             if (window.self !== window.top) {
-                console.log(
-                    '[Main] Attempting to exit via client.runtime.exit()...',
-                )
+                console.log('[Main] Attempting to exit via client.runtime.exit()...')
                 client.runtime.exit()
             } else {
-                console.warn(
-                    '[Main] Exit Game clicked in Standalone Mode. No actual exit occurs.',
-                )
+                console.warn('[Main] Exit Game clicked in Standalone Mode. No actual exit occurs.')
                 if (statusEl) {
                     statusEl.textContent = 'Exited [Standalone Mode]'
                     statusEl.classList.add('exited')
